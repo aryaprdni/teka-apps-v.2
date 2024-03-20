@@ -59,15 +59,37 @@ func colHelper(db *DB) *mongo.Collection {
 }
 
 func (db *DB) UpdateUser(id string, user User) (*mongo.UpdateResult, error) {
+    if db == nil {
+        return nil, fmt.Errorf("db is null")
+    }
+
     col := colHelper(db)
+    if col == nil {
+        return nil, fmt.Errorf("col is null")
+    }
+
     ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
     defer cancel()
 
-    objId, _ := primitive.ObjectIDFromHex(id)
+    objId, err := primitive.ObjectIDFromHex(id)
+    if err != nil {
+        return nil, fmt.Errorf("failed to parse ObjectID from %s: %w", id, err)
+    }
+
+    // Get current user data from the database
+    var existingUser User
+    err = col.FindOne(ctx, bson.M{"_id": objId}).Decode(&existingUser)
+    if err != nil {
+        return nil, fmt.Errorf("failed to find user: %w", err)
+    }
+
+    // Update diamond only if it's different
+    if user.Diamond != existingUser.Diamond {
+        user.Diamond = existingUser.Diamond + 1
+    }
 
     update := bson.M{}
 
-    // Periksa apakah bidang baru tidak kosong, jika ya, gunakan nilai baru
     if user.Name != "" {
         update["name"] = user.Name
     }
@@ -75,7 +97,7 @@ func (db *DB) UpdateUser(id string, user User) (*mongo.UpdateResult, error) {
         update["email"] = user.Email
     }
     
-    if user.Diamond != 0 {
+    if user.Diamond != existingUser.Diamond {
         update["diamond"] = user.Diamond
     }
 
@@ -94,9 +116,8 @@ func (db *DB) UpdateUser(id string, user User) (*mongo.UpdateResult, error) {
 
     // Perbarui dokumen dengan menggunakan operasi $set pada MongoDB
     result, err := col.UpdateOne(ctx, bson.M{"_id": objId}, bson.M{"$set": update})
-
     if err != nil {
-        return nil, err
+        return nil, fmt.Errorf("failed to update user: %w", err)
     }
 
     return result, nil

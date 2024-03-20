@@ -14,8 +14,9 @@ type UserServiceServer struct {
 }
 
 func (service *UserServiceServer) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest) (*pb.UpdateUserResponse, error) {
-    newDiamond := req.Diamond + 1
-    newUser := configs.User{Name: req.Name, Email: req.Email, Diamond: newDiamond, Avatar: req.Avatar, PurchasedAvatars: req.PurchasedAvatars}
+    newUser := configs.User{Name: req.Name, Email: req.Email, Diamond: req.Diamond, Avatar: req.Avatar, PurchasedAvatars: req.PurchasedAvatars}
+
+    newUser.Diamond++
     _, err := db.UpdateUser(req.Id, newUser)
 
     if err != nil {
