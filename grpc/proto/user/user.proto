@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+option go_package = "teka-apps/grpc/user";
+
+package user;
+
+service UserService {
+    rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse);
+}
+
+message UpdateUserRequest {
+    string id = 1;
+    string name = 2;
+    string email = 3;
+    int32 diamond = 4;
+    string avatar = 5;
+    repeated string purchasedAvatars = 6;
+}
+
+message UpdateUserResponse {
+    string data = 1;
+}
