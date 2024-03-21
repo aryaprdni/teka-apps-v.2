@@ -6,7 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use MongoDB\Laravel\Eloquent\Model;
 use Illuminate\Contracts\Auth\Authenticatable;
-// use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Model implements Authenticatable
 {
@@ -26,10 +26,10 @@ class User extends Model implements Authenticatable
     ];
     protected $cast = ['purchasedAvatars' => 'array'];
 
-    // public function contacts(): HasMany
-    // {
-    //     // return $this->hasMany(Contact::class, "user_id", "id");
-    // }
+    public function transaction(): HasMany
+    {
+        return $this->hasMany(Transaction::class, 'user_id', '_id');
+    }
 
     public function getAuthIdentifierName()
     {

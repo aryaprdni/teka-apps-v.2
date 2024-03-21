@@ -1,0 +1,39 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Diamond {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  image String
+  price Int
+  quantity Int
+}
+
+model Transaction {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  amount Int
+  status transactions_status
+  customer_name String
+  customer_email String
+  snap_token String?
+  snap_redirect_url String?
+  payment_method String?
+  created_at DateTime?
+  updated_at DateTime?
+
+  @@map("transactions")
+}
+
+enum transactions_status {
+  PENDING_PAYMENT
+  PAID
+  CANCELED
+}

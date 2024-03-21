@@ -26,6 +26,13 @@ Route::middleware(\App\Http\Middleware\ApiAuthMiddleware::class)->group(function
     Route::get('/users/current', [\App\Http\Controllers\UserController::class, 'get']);
     Route::put('/users/current', [\App\Http\Controllers\UserController::class, 'update']);
     Route::delete('/users/logout', [\App\Http\Controllers\UserController::class, 'logout']);
+
+    Route::post('/diamond', [\App\Http\Controllers\DiamondController::class, 'createDiamond']);
+    Route::get('/diamond', [\App\Http\Controllers\DiamondController::class, 'getDiamond']);
+    Route::put('/diamond/{id}', [\App\Http\Controllers\DiamondController::class, 'updateDiamond']);
+    Route::delete('/diamond/{id}', [\App\Http\Controllers\DiamondController::class, 'deleteDiamond']);
+
+    Route::post('/transaction', [\App\Http\Controllers\TransactionController::class, 'createTransaction']);
 });
 
 Route::post('/admin', [\App\Http\Controllers\AdminController::class, 'register']);
@@ -35,11 +42,6 @@ Route::post('/avatar', [\App\Http\Controllers\AvatarController::class, 'CreateAv
 Route::get('/avatar', [\App\Http\Controllers\AvatarController::class, 'getAllAvatar']);
 Route::put('/avatar/{id}', [\App\Http\Controllers\AvatarController::class, 'updateAvatar']);
 Route::delete('/avatar/{id}', [\App\Http\Controllers\AvatarController::class, 'deleteAvatar']);
-
-Route::post('/diamond', [\App\Http\Controllers\DiamondController::class, 'createDiamond']);
-Route::get('/diamond', [\App\Http\Controllers\DiamondController::class, 'getDiamond']);
-Route::put('/diamond/{id}', [\App\Http\Controllers\DiamondController::class, 'updateDiamond']);
-Route::delete('/diamond/{id}', [\App\Http\Controllers\DiamondController::class, 'deleteDiamond']);
 
 Route::post('/quiz', [\App\Http\Controllers\QuizController::class, 'createQuiz']);
 Route::get('/quiz', [\App\Http\Controllers\QuizController::class, 'getQuiz']);

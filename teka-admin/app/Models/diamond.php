@@ -4,10 +4,9 @@ namespace App\Models;
 
 // use Illuminate\Database\Eloquent\Model;
 use MongoDB\Laravel\Eloquent\Model;
+use MongoDB\Laravel\Relations\HasMany;
 
-
-
-class Diamond extends Model 
+class Diamond extends Model
 {
     // protected $connection = 'mysql';
     protected $connection = 'mongodb';
@@ -16,7 +15,11 @@ class Diamond extends Model
     protected $keyType = "int";
     public $timestamps = true;
     public $incrementing = true;
-    
-    protected $fillable = ['image', 'quantity', 'price'];
-}
 
+    protected $fillable = ['image', 'quantity', 'price'];
+
+    public function diamond(): HasMany
+    {
+        return $this->hasMany(Transaction::class, 'diamond_id', '_id');
+    }
+}

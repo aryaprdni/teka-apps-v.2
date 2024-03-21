@@ -46,7 +46,7 @@ func main() {
 	})
 
 	// Registering route handlers
-	router.GET("/api/v1/avatar", avatarControllers.GetAllAvatars)
+	router.GET("/api/v1/avatars", avatarControllers.GetAllAvatars)
 	router.GET("/api/v1/avatar/:id", avatarControllers.GetDetailAvatar)
 	router.GET("/api/v1/quiz", quizControllers.GetAllquizes)
 	router.GET("/api/v1/quiz/:id", quizControllers.GetDetailQuiz)
