@@ -33,6 +33,7 @@ Route::middleware(\App\Http\Middleware\ApiAuthMiddleware::class)->group(function
     Route::delete('/diamond/{id}', [\App\Http\Controllers\DiamondController::class, 'deleteDiamond']);
 
     Route::post('/transaction', [\App\Http\Controllers\TransactionController::class, 'createTransaction']);
+    Route::put('/update-transaction', [\App\Http\Controllers\TransactionController::class, 'updateTransaction']);
 });
 
 Route::post('/admin', [\App\Http\Controllers\AdminController::class, 'register']);

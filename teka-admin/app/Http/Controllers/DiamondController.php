@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Diamond;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response; 
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\JsonResponse;
 use App\Http\Requests\DiamondRequest;
@@ -15,36 +15,39 @@ class DiamondController extends Controller
 {
     public function createDiamond(DiamondRequest $request): JsonResponse
     {
-        $this-> validate($request, [
+        $this->validate($request, [
             'image' => 'required|image|mimes:jpeg,jpg,png,|max:2048',
-            'quantity'=> 'required|numeric',
-            'price'=> 'required|numeric',
+            'quantity' => 'required|numeric',
+            'price' => 'required|numeric',
         ]);
 
         cloudinary()->upload(
-            $request->file('image')->getRealPath(), [
-            'transformation' => [
-                'gravity' => 'auto',
-                'width' => 300,
-                'height' => 300,
-                'crop' => 'crop'
+            $request->file('image')->getRealPath(),
+            [
+                'transformation' => [
+                    'gravity' => 'auto',
+                    'width' => 300,
+                    'height' => 300,
+                    'crop' => 'crop'
+                ]
             ]
-        ])->getSecurePath();
+        )->getSecurePath();
 
-        $uploadedFile = $request->file('image'); 
+        $uploadedFile = $request->file('image');
         $result = Cloudinary::upload($uploadedFile->getRealPath(), [
-        'folder' => 'teka_apps', 
-        'public_id' => 'image-' . time(),
-        'overwrite' =>  true,
+            'folder' => 'teka_apps',
+            'public_id' => 'image-' . time(),
+            'overwrite' =>  true,
         ]);
 
         $image = $result->getSecurePath();
 
         $diamond = Diamond::create([
-            'image'         => $image,
-            'quantity'      => $request->quantity,
-            'price'         => $request->price,
+            'image' => $image,
+            'quantity' => (int) $request->quantity,
+            'price' => (int) $request->price,
         ]);
+
 
         return (new DiamondResource($diamond))->response()->setStatusCode(201);
     }
@@ -59,31 +62,33 @@ class DiamondController extends Controller
     {
         $this->validate($request, [
             'image' => 'required|image|mimes:jpeg,jpg,png,|max:2048',
-            'quantity'=> 'required|numeric',
-            'price'=> 'required|numeric',
+            'quantity' => 'required|numeric',
+            'price' => 'required|numeric',
         ]);
 
         $diamond = Diamond::find($id);
 
-        if(!$diamond){
+        if (!$diamond) {
             return response()->json(['message' => 'Diamond not found'], response::HTTP_NOT_FOUND);
         }
 
         cloudinary()->upload(
-            $request->file('image')->getRealPath(), [
-            'transformation' => [
-                'gravity' => 'auto',
-                'width' => 300,
-                'height' => 300,
-                'crop' => 'crop'
+            $request->file('image')->getRealPath(),
+            [
+                'transformation' => [
+                    'gravity' => 'auto',
+                    'width' => 300,
+                    'height' => 300,
+                    'crop' => 'crop'
+                ]
             ]
-        ])->getSecurePath();
+        )->getSecurePath();
 
-        $uploadedFile = $request->file('image'); 
+        $uploadedFile = $request->file('image');
         $result = Cloudinary::upload($uploadedFile->getRealPath(), [
-        'folder' => 'teka_apps', 
-        'public_id' => 'image-' . time(),
-        'overwrite' =>  true,
+            'folder' => 'teka_apps',
+            'public_id' => 'image-' . time(),
+            'overwrite' =>  true,
         ]);
 
         $image = $result->getSecurePath();
@@ -99,26 +104,26 @@ class DiamondController extends Controller
 
     public function deleteDiamond(Request $request, $id)
     {
-        $diamond = Diamond::find ($id);
+        $diamond = Diamond::find($id);
 
-        if($diamond){
+        if ($diamond) {
             $diamond->delete();
             return response()->json(['message' => 'Diamond deleted'], Response::HTTP_NOT_FOUND);
         }
     }
 
 
-     ////////////////////////////////////////////// view //////////////////////////////////////////
-     public function index()
+    ////////////////////////////////////////////// view //////////////////////////////////////////
+    public function index()
     {
         $diamonds = Diamond::all();
         $pageTitle = 'Teka | Diamond';
         $user = Auth::guard('admin')->user();
-        
+
         return view('pages.diamond.view-diamond', compact('diamonds', 'pageTitle'), ['user' => $user]);
     }
 
-     public function viewCreatediamond()
+    public function viewCreatediamond()
     {
         // $diamonds = diamond::all();
         $pageTitle = 'Teka | Create Diamond';
@@ -127,17 +132,17 @@ class DiamondController extends Controller
         return view('pages.diamond.create-diamond', compact('pageTitle'), ['user' => $user]);
     }
 
-     public function adminCreatediamond(diamondRequest $request)
+    public function adminCreatediamond(diamondRequest $request)
     {
         cloudinary()->upload(
             $request->file('image')->getRealPath()
         )->getSecurePath();
 
-        $uploadedFile = $request->file('image'); 
+        $uploadedFile = $request->file('image');
         $result = Cloudinary::upload($uploadedFile->getRealPath(), [
-        'folder' => 'teka_apps', 
-        'public_id' => 'image-' . time(),
-        'overwrite' =>  true,
+            'folder' => 'teka_apps',
+            'public_id' => 'image-' . time(),
+            'overwrite' =>  true,
         ]);
 
         $image = $result->getSecurePath();
@@ -201,5 +206,4 @@ class DiamondController extends Controller
             return response()->json(['error' => 'diamond not found'], Response::HTTP_NOT_FOUND);
         }
     }
-
 }
